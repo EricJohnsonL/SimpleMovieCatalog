@@ -1,0 +1,26 @@
+<resources>
+    <string name="app_name">Movie Catalogue</string>
+    <string name="label_search">Cari</string>
+    <string name="hint_search_movie">Cari Film</string>
+    <string name="label_search_not_found">Pencarian tidak ketemu</string>
+    <string name="label_movies_not_found">Film tidak ketemu</string>
+    <string name="label_no_internet_connection">Tidak ada koneksi internet</string>
+    <string name="label_synopsis">Sinopsis</string>
+    <string name="label_release_date">Tanggal rilis:</string>
+    <string name="label_language">Bahasa</string>
+    <string name="label_genre">Genre:</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="action_settings">Pengaturan</string>
+    <string name="label_movie_poster">Pster Film</string>
+    <string name="label_now_playing">Sedang Tayang</string>
+    <string name="label_upcoming_movies">Segera Tayang</string>
+    <string name="action_search">Cari</string>
+    <string name="label_setting">Pengaturan</string>
+    <string name="label_search_result">Hasil Pencarian</string>
+    <string name="label_notification">Notifikasi</string>
+    <string name="label_upcoming_reminder_notification">Notifikasi pengingat film segera tayang</string>
+    <string name="label_turn_on_off_upcoming_reminder">Atur Notifikasi pengingat film segera tayang</string>
+    <string name="label_change_language">Ganti Bahasa</string>
+    <string name="label_notif_message">Atur jadwal nontonmu dengan melihat film yang akan datang!</string>
+</resources>
