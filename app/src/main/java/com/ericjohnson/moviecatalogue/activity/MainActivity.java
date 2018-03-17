@@ -40,9 +40,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private ActionBarDrawerToggle toggle;
 
-    private String title;
-
     private int getDrawerItem;
+
+    private int currentPosition;
 
     private Fragment currentFragment;
 
@@ -64,20 +64,20 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.fl_container, currentFragment).commit();
             navView.getMenu().getItem(getDrawerItem).setChecked(true);
-            title = getString(R.string.label_upcoming_movies);
+            currentPosition = 1;
         } else if (savedInstanceState == null) {
             currentFragment = new NowPlayingFragment();
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.fl_container, currentFragment).commit();
             navView.getMenu().getItem(0).setChecked(true);
-            title = getString(R.string.label_now_playing);
+            currentPosition = 0;
         }
+        setTitle(getString(R.string.app_name));
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        getSupportActionBar().setTitle(title);
         toggle = new ActionBarDrawerToggle(
                 this, drawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawerLayout.addDrawerListener(toggle);
@@ -99,7 +99,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
     }
 
-
     @Override
     public boolean onCreateOptionsMenu(final Menu menu) {
         getMenuInflater().inflate(R.menu.menu, menu);
@@ -115,30 +114,30 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         return super.onOptionsItemSelected(item);
     }
 
-
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
 
         int id = item.getItemId();
         Fragment fragment = null;
+        int position = -1;
 
         if (id == R.id.now_playing) {
             fragment = new NowPlayingFragment();
-            title = getString(R.string.label_now_playing);
+            position = 0;
         } else if (id == R.id.upcoming_movies) {
             fragment = new UpcomingFragment();
-            title = getString(R.string.label_upcoming_movies);
+            position = 1;
         } else if (id == R.id.search_movies) {
             fragment = new SearchFragment();
-            title = getString(R.string.label_search);
+            position = 2;
         }
 
-        if (fragment != null && !fragment.getClass().getSimpleName().equals(currentFragment.getClass().getSimpleName())) {
+        if (fragment != null && position != currentPosition) {
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.fl_container, fragment).commit();
-            getSupportActionBar().setTitle(title);
             currentFragment = fragment;
+            currentPosition = position;
         }
 
         drawerLayout.closeDrawer(GravityCompat.START);

@@ -20,10 +20,10 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.ericjohnson.moviecatalogue.R;
+import com.ericjohnson.moviecatalogue.activity.MovieDetailActivity;
 import com.ericjohnson.moviecatalogue.adapter.MoviesAdapter;
 import com.ericjohnson.moviecatalogue.loader.MovieAsynctaskLoader;
 import com.ericjohnson.moviecatalogue.model.Movies;
-import com.ericjohnson.moviecatalogue.activity.MovieDetailActivity;
 import com.ericjohnson.moviecatalogue.utils.Constants;
 import com.ericjohnson.moviecatalogue.utils.Keys;
 
@@ -49,7 +49,11 @@ public class UpcomingFragment extends Fragment implements
     @BindView(R.id.rv_movie_list)
     RecyclerView rvMovieList;
 
+    @BindView(R.id.tv_title)
+    TextView tvTitle;
+
     Unbinder unbinder;
+
 
     private ArrayList<Movies> movies;
 
@@ -91,11 +95,13 @@ public class UpcomingFragment extends Fragment implements
         if (data != null && !data.isEmpty()) {
             tvEmptyResult.setVisibility(View.GONE);
             rvMovieList.setVisibility(View.VISIBLE);
+            tvTitle.setVisibility(View.VISIBLE);
             movies.addAll(data);
         } else {
             tvEmptyResult.setVisibility(View.VISIBLE);
             tvEmptyResult.setText(R.string.label_movies_not_found);
             rvMovieList.setVisibility(View.GONE);
+            tvTitle.setVisibility(View.GONE);
         }
         adapter.notifyDataSetChanged();
     }
@@ -122,6 +128,7 @@ public class UpcomingFragment extends Fragment implements
                 pbMovies.setVisibility(View.VISIBLE);
                 rvMovieList.setVisibility(View.GONE);
                 tvEmptyResult.setVisibility(View.GONE);
+                tvTitle.setVisibility(View.GONE);
             }
 
         } else {
@@ -129,6 +136,7 @@ public class UpcomingFragment extends Fragment implements
             rvMovieList.setVisibility(View.GONE);
             tvEmptyResult.setVisibility(View.VISIBLE);
             tvEmptyResult.setText(R.string.label_no_internet_connection);
+            tvTitle.setVisibility(View.GONE);
         }
     }
 

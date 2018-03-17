@@ -3,16 +3,22 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <TextView
+        android:id="@+id/tv_title"
+        style="@style/CustomFragmentHomeTitle"
+        android:text="@string/label_upcoming_movies" />
+
     <ProgressBar
         android:id="@+id/progress_bar"
-        style="@style/CustomProgressBar"  />
+        style="@style/CustomProgressBar" />
 
     <TextView
         android:id="@+id/tv_empty_result"
-        style="@style/CustomTextViewError"  />
+        style="@style/CustomTextViewError" />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/rv_movie_list"
-        style="@style/CustomRecyclerViewStyle" />
+        style="@style/CustomRecyclerViewStyle"
+        android:layout_below="@id/tv_title" />
 
 </RelativeLayout>
