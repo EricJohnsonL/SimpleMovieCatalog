@@ -48,11 +48,14 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
 
         llLanguage.setOnClickListener(this);
 
+        schedulerTask = new SchedulerTask(SettingActivity.this);
+
         if (getPreferences(Context.MODE_PRIVATE).getString(Keys.PREF_UPCOMING_NOTIF,
                 getString(R.string.label_off)).equals(getString(R.string.label_on))) {
             swUpcoming.setChecked(true);
+            schedulerTask.createPeriodicTask();
         }
-        schedulerTask = new SchedulerTask(SettingActivity.this);
+
 
         swUpcoming.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
