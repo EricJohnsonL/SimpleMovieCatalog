@@ -1,11 +1,14 @@
 package com.ericjohnson.moviecatalogue.activity;
 
 import android.app.LoaderManager;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Loader;
+import android.database.Cursor;
 import android.graphics.Paint;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -13,24 +16,33 @@ import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.ericjohnson.moviecatalogue.BuildConfig;
 import com.ericjohnson.moviecatalogue.R;
+import com.ericjohnson.moviecatalogue.db.MoviesHelper;
 import com.ericjohnson.moviecatalogue.loader.MovieDetailAsynctaskLoader;
 import com.ericjohnson.moviecatalogue.model.Genre;
 import com.ericjohnson.moviecatalogue.model.MovieDetail;
 import com.ericjohnson.moviecatalogue.utils.DateUtil;
 import com.ericjohnson.moviecatalogue.utils.Keys;
-import com.ericjohnson.moviecatalogue.utils.Uri;
 
 import java.text.DecimalFormat;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+
+import static com.ericjohnson.moviecatalogue.db.DatabaseContract.CONTENT_URI;
+import static com.ericjohnson.moviecatalogue.db.DatabaseContract.MoviesColumns.POSTER;
+import static com.ericjohnson.moviecatalogue.db.DatabaseContract.MoviesColumns.RELEASEDATE;
+import static com.ericjohnson.moviecatalogue.db.DatabaseContract.MoviesColumns.TITLE;
+import static com.ericjohnson.moviecatalogue.db.DatabaseContract.MoviesColumns._ID;
 
 public class MovieDetailActivity extends AppCompatActivity implements
         LoaderManager.LoaderCallbacks<MovieDetail> {
@@ -77,7 +89,18 @@ public class MovieDetailActivity extends AppCompatActivity implements
     @BindView(R.id.ll_movie_detail)
     LinearLayout llMovieDetail;
 
+    @BindView(R.id.ib_favourite)
+    ImageButton ibFavourite;
 
+    private Cursor movie;
+
+    private MoviesHelper moviesHelper;
+
+    private boolean isFavourited = false;
+
+    private int id;
+
+    private String imageUrl, releaseDate;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,20 +108,46 @@ public class MovieDetailActivity extends AppCompatActivity implements
         setContentView(R.layout.activity_movie_detail);
         ButterKnife.bind(this);
 
+        moviesHelper = new MoviesHelper(this);
+        moviesHelper.open();
+
         tvLabelReleaseDate.setPaintFlags(tvLabelReleaseDate.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
 
         tvLabelLanguage.setPaintFlags(tvLabelLanguage.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
 
         tvLabelGenre.setPaintFlags(tvLabelGenre.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
 
-        int id = getIntent().getIntExtra(Keys.KEY_MOVIE_ID, 0);
-        String title = getIntent().getStringExtra(Keys.KEY_TITLE);
+        id = getIntent().getIntExtra(Keys.KEY_MOVIE_ID, 0);
+        final String title = getIntent().getStringExtra(Keys.KEY_TITLE);
 
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle(title);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
         getMovieDetail(id);
+        ibFavourite.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (!isFavourited) {
+                    ContentValues values = new ContentValues();
+                    values.put(_ID, id);
+                    values.put(TITLE, tvTitleDetail.getText().toString());
+                    values.put(POSTER, imageUrl);
+                    values.put(RELEASEDATE, releaseDate);
+
+                    getContentResolver().insert(CONTENT_URI, values);
+                    isFavourited = true;
+                    ibFavourite.setBackground(getResources().getDrawable(R.drawable.ic_favorite));
+                    Toast.makeText(MovieDetailActivity.this, R.string.label_added_to_favourite,
+                            Toast.LENGTH_SHORT).show();
+                } else {
+                    getContentResolver().delete(getIntent().getData(), null, null);
+                    isFavourited = false;
+                    ibFavourite.setBackground(getResources().getDrawable(R.drawable.ic_favorite_border));
+                    Toast.makeText(MovieDetailActivity.this, R.string.label_removed_from_favourite,
+                            Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
 
     }
 
@@ -113,15 +162,18 @@ public class MovieDetailActivity extends AppCompatActivity implements
         pbMovieDetail.setVisibility(View.GONE);
         llMovieDetail.setVisibility(View.VISIBLE);
 
-        tvTitleDetail.setText(!TextUtils.isEmpty(data.getTitle()) ? data.getTitle() : null);
+        tvTitleDetail.setText(!TextUtils.isEmpty(data.getTitle()) ? data.getTitle() : "");
         tvReleaseDateDetail.setText(!TextUtils.isEmpty(data.getReleaseDate()) ? DateUtil.getReadableDate(data.getReleaseDate()) : "-");
         tvLanguage.setText(!TextUtils.isEmpty(data.getLanguage()) ? data.getLanguage() : "-");
         tvSynopsis.setText(!TextUtils.isEmpty(data.getOverview()) ? data.getOverview() : "-");
 
         ivPosterDetail.setBackground(ContextCompat.getDrawable(this, R.drawable.ic_image));
 
+        imageUrl = data.getPoster();
+        releaseDate = data.getReleaseDate();
+
         if (data.getPoster() != null) {
-            Glide.with(this).load(Uri.imageUrl + data.getPoster()).into(ivPosterDetail);
+            Glide.with(this).load(BuildConfig.IMAGE_URL + data.getPoster()).into(ivPosterDetail);
         }
 
         String rating;
@@ -149,6 +201,21 @@ public class MovieDetailActivity extends AppCompatActivity implements
         } else {
             tvGenre.setText("-");
         }
+
+        Uri uri = getIntent().getData();
+        Cursor cursor = getContentResolver().query(uri, null, null, null, null);
+
+        if (cursor != null) {
+            if (cursor.getCount() == 0) {
+                ibFavourite.setBackground(getResources().getDrawable(R.drawable.ic_favorite_border));
+                isFavourited = false;
+            } else {
+                ibFavourite.setBackground(getResources().getDrawable(R.drawable.ic_favorite));
+                isFavourited = true;
+            }
+        }
+        cursor.close();
+
     }
 
     @Override

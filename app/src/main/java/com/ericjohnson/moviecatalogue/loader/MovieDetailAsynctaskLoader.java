@@ -43,9 +43,9 @@ public class MovieDetailAsynctaskLoader extends AsyncTaskLoader<MovieDetail> {
 
         final MovieDetail[] movieDetail = new MovieDetail[1];
 
-        final String TAG=MovieDetailAsynctaskLoader.class.getSimpleName();
+        final String TAG = MovieDetailAsynctaskLoader.class.getSimpleName();
 
-        String url = "https://api.themoviedb.org/3/movie/" + id + "?api_key=" +
+        String url = BuildConfig.MOVIE_DETAIL + id + "?api_key=" +
                 BuildConfig.API_KEY + "&language=en-US";
 
         client.get(url, new AsyncHttpResponseHandler() {
@@ -62,6 +62,7 @@ public class MovieDetailAsynctaskLoader extends AsyncTaskLoader<MovieDetail> {
                     ArrayList<Genre> genres = new ArrayList<>();
                     String result = new String(responseBody);
                     JSONObject responseObject = new JSONObject(result);
+                    int id = responseObject.getInt("id");
                     String title = responseObject.getString("title");
                     String poster = responseObject.getString("poster_path");
                     String releaseDate = responseObject.getString("release_date");
@@ -80,7 +81,7 @@ public class MovieDetailAsynctaskLoader extends AsyncTaskLoader<MovieDetail> {
                         genres = null;
                     }
                     Log.d(TAG, result);
-                    movieDetail[0] = new MovieDetail(title, language, overview, poster, genres,
+                    movieDetail[0] = new MovieDetail(id, title, language, overview, poster, genres,
                             releaseDate, rating);
 
                 } catch (JSONException e) {

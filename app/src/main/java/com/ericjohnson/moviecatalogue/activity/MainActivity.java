@@ -15,6 +15,7 @@ import android.view.MenuItem;
 import android.widget.FrameLayout;
 
 import com.ericjohnson.moviecatalogue.R;
+import com.ericjohnson.moviecatalogue.fragment.FavouriteFragment;
 import com.ericjohnson.moviecatalogue.fragment.NowPlayingFragment;
 import com.ericjohnson.moviecatalogue.fragment.SearchFragment;
 import com.ericjohnson.moviecatalogue.fragment.UpcomingFragment;
@@ -131,6 +132,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         } else if (id == R.id.search_movies) {
             fragment = new SearchFragment();
             position = 2;
+        }
+        else if (id == R.id.favourite_movies) {
+            fragment = new FavouriteFragment();
+            position = 3;
         }
 
         if (fragment != null && position != currentPosition) {

@@ -1,0 +1,14 @@
+<resources>
+    <string name="app_name">FavoriteMovie</string>
+    <string name="label_search_not_found">Search not found</string>
+    <string name="label_movies_not_found">Movies not found</string>
+    <string name="label_no_internet_connection">No internet connection</string>
+    <string name="label_synopsis">Synopsis</string>
+    <string name="label_release_date">Release date:</string>
+    <string name="label_language">Language</string>
+    <string name="label_genre">Genre:</string>
+    <string name="label_movie_poster">movie poster</string>
+    <string name="label_favourite_movie">Favourite Movie</string>
+    <string name="label_favourite">Favourite</string>
+    <string name="label_empty_favorite_movies">No Favorite Movies</string>
+</resources>

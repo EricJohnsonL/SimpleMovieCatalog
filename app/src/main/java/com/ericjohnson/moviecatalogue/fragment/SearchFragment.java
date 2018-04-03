@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
@@ -36,6 +37,8 @@ import java.util.ArrayList;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
+
+import static com.ericjohnson.moviecatalogue.db.DatabaseContract.CONTENT_URI;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -182,8 +185,10 @@ public class SearchFragment extends Fragment implements LoaderManager.LoaderCall
     @Override
     public void onItemClick(int position) {
         Intent intent = new Intent(getContext(), MovieDetailActivity.class);
+        Uri uri = Uri.parse(CONTENT_URI + "/" + movies.get(position).getId());
         intent.putExtra(Keys.KEY_MOVIE_ID, movies.get(position).getId());
         intent.putExtra(Keys.KEY_TITLE, movies.get(position).getTitle());
+        intent.setData(uri);
         startActivity(intent);
     }
 }

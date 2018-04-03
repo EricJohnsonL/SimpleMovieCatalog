@@ -18,6 +18,10 @@
             android:id="@+id/search_movies"
             android:icon="@drawable/ic_search"
             android:title="@string/label_search" />
+        <item
+            android:id="@+id/favourite_movies"
+            android:icon="@drawable/ic_favorite_border"
+            android:title="@string/label_favourite" />
     </group>
 
 </menu>

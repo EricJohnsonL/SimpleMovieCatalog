@@ -26,4 +26,9 @@
     <string name="label_notif_message">Set your plan to watch the upcoming movies. Check it out!</string>
     <string name="label_off">OFF</string>
     <string name="label_on">ON</string>
+    <string name="label_favourite_movie">Favourite Movie</string>
+    <string name="label_favourite">Favourite</string>
+    <string name="label_added_to_favourite">Added to favourite</string>
+    <string name="label_removed_from_favourite">Removed from favourite</string>
+    <string name="label_empty_favorite_movies">No Favorite Movies</string>
 </resources>

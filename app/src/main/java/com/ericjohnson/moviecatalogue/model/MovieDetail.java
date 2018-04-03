@@ -8,6 +8,8 @@ import java.util.ArrayList;
 
 public class MovieDetail {
 
+    private int id;
+
     private String title;
 
     private String language;
@@ -25,8 +27,8 @@ public class MovieDetail {
     public MovieDetail() {
     }
 
-    public MovieDetail(String title, String language, String overview, String poster,
-                       ArrayList<Genre> genres, String releaseDate, float voteAverage) {
+    public MovieDetail(int id, String title, String language, String overview, String poster, ArrayList<Genre> genres, String releaseDate, float voteAverage) {
+        this.id = id;
         this.title = title;
         this.language = language;
         this.overview = overview;
@@ -34,6 +36,14 @@ public class MovieDetail {
         this.genres = genres;
         this.releaseDate = releaseDate;
         this.voteAverage = voteAverage;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getTitle() {

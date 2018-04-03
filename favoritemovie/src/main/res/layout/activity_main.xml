@@ -1,12 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
-
-    <TextView
-        android:id="@+id/tv_title"
-        style="@style/CustomFragmentHomeTitle"
-        android:text="@string/label_now_playing" />
+    android:layout_height="match_parent"
+    tools:context=".activity.MainActivity">
 
     <ProgressBar
         android:id="@+id/progress_bar"
@@ -18,7 +16,6 @@
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/rv_movie_list"
-        style="@style/CustomRecyclerViewStyle"
-        android:layout_below="@id/tv_title" />
+        style="@style/CustomRecyclerViewStyle" />
 
 </RelativeLayout>

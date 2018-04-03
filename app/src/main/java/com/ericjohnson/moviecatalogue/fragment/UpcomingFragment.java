@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
@@ -33,6 +34,8 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
+import static com.ericjohnson.moviecatalogue.db.DatabaseContract.CONTENT_URI;
+
 
 /**
  * A simple {@link Fragment} subclass.
@@ -54,11 +57,9 @@ public class UpcomingFragment extends Fragment implements
 
     Unbinder unbinder;
 
-
     private ArrayList<Movies> movies;
 
     private MoviesAdapter adapter;
-
 
     public UpcomingFragment() {
         // Required empty public constructor
@@ -68,8 +69,9 @@ public class UpcomingFragment extends Fragment implements
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_upcoming, container, false);
+        View view = inflater.inflate(R.layout.fragment_movies, container, false);
         unbinder = ButterKnife.bind(this, view);
+        tvTitle.setText(getString(R.string.label_upcoming_movies));
 
         movies = new ArrayList<>();
         adapter = new MoviesAdapter(getContext(), movies);
@@ -143,8 +145,10 @@ public class UpcomingFragment extends Fragment implements
     @Override
     public void onItemClick(int position) {
         Intent intent = new Intent(getContext(), MovieDetailActivity.class);
+        Uri uri = Uri.parse(CONTENT_URI + "/" + movies.get(position).getId());
         intent.putExtra(Keys.KEY_MOVIE_ID, movies.get(position).getId());
         intent.putExtra(Keys.KEY_TITLE, movies.get(position).getTitle());
+        intent.setData(uri);
         startActivity(intent);
     }
 

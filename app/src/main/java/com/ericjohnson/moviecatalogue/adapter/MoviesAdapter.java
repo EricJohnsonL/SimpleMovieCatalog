@@ -12,9 +12,9 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
+import com.ericjohnson.moviecatalogue.BuildConfig;
 import com.ericjohnson.moviecatalogue.R;
 import com.ericjohnson.moviecatalogue.model.Movies;
-import com.ericjohnson.moviecatalogue.utils.Uri;
 
 import java.util.ArrayList;
 
@@ -30,10 +30,6 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MoviesView
     private Context context;
 
     private ArrayList<Movies> moviesList;
-
-    public OnItemClickListener getOnItemClickListener() {
-        return onItemClickListener;
-    }
 
     public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
         this.onItemClickListener = onItemClickListener;
@@ -65,7 +61,7 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MoviesView
                 .error(R.drawable.ic_image)
                 .fallback(R.drawable.ic_image);
         Glide.with(context).setDefaultRequestOptions(requestOptions).
-                load(Uri.imageUrl + moviesList.get(position).getPoster()).into(holder.ivPoster);
+                load( BuildConfig.IMAGE_URL+ moviesList.get(position).getPoster()).into(holder.ivPoster);
         holder.tvTitle.setText(moviesList.get(position).getTitle());
         holder.tvReleaseDate.setText(moviesList.get(position).getReleaseDate());
     }

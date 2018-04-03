@@ -11,4 +11,6 @@ public class Constants {
     public static final int SEARCH_TYPE = 2;
 
     public static final int UPCOMING_MOVIE_TYPE = 3;
+
+    public static final int FAVORITE_MOVIE_TYPE = 4;
 }

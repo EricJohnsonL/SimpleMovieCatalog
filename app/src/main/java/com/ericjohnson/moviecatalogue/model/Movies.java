@@ -1,10 +1,21 @@
 package com.ericjohnson.moviecatalogue.model;
 
+import android.database.Cursor;
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import com.ericjohnson.moviecatalogue.db.DatabaseContract;
+
+import static android.provider.BaseColumns._ID;
+import static com.ericjohnson.moviecatalogue.db.DatabaseContract.MoviesColumns.TITLE;
+import static com.ericjohnson.moviecatalogue.db.DatabaseContract.getColumnInt;
+import static com.ericjohnson.moviecatalogue.db.DatabaseContract.getColumnString;
+
 /**
  * Created by EricJohnson on 3/1/2018.
  */
 
-public class Movies {
+public class Movies implements Parcelable {
 
     private int id;
 
@@ -14,7 +25,6 @@ public class Movies {
 
     private String releaseDate;
 
-
     public Movies() {
     }
 
@@ -23,6 +33,16 @@ public class Movies {
         this.title = title;
         this.poster = poster;
         this.releaseDate = releaseDate;
+    }
+
+
+
+    public Movies(Cursor cursor){
+        this.id = getColumnInt(cursor, _ID);
+        this.title = getColumnString(cursor, TITLE);
+        this.poster = getColumnString(cursor, DatabaseContract.MoviesColumns.POSTER);
+        this.releaseDate = getColumnString(cursor, DatabaseContract.MoviesColumns.RELEASEDATE);
+
     }
 
     public int getId() {
@@ -57,4 +77,35 @@ public class Movies {
         this.releaseDate = releaseDate;
     }
 
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(this.id);
+        dest.writeString(this.title);
+        dest.writeString(this.poster);
+        dest.writeString(this.releaseDate);
+    }
+
+    protected Movies(Parcel in) {
+        this.id = in.readInt();
+        this.title = in.readString();
+        this.poster = in.readString();
+        this.releaseDate = in.readString();
+    }
+
+    public static final Parcelable.Creator<Movies> CREATOR = new Parcelable.Creator<Movies>() {
+        @Override
+        public Movies createFromParcel(Parcel source) {
+            return new Movies(source);
+        }
+
+        @Override
+        public Movies[] newArray(int size) {
+            return new Movies[size];
+        }
+    };
 }

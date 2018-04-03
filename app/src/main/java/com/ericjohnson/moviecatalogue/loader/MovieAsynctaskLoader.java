@@ -80,11 +80,11 @@ public class MovieAsynctaskLoader extends AsyncTaskLoader<ArrayList<Movies>> {
 
         String url;
         if (type == Constants.NOW_PLAYING_TYPE) {
-            url = "https://api.themoviedb.org/3/movie/now_playing?api_key=" + BuildConfig.API_KEY + "&language=en-US";
+            url = BuildConfig.NOW_PLAYING + BuildConfig.API_KEY + "&language=en-US";
         } else if (type == Constants.SEARCH_TYPE) {
-            url = "https://api.themoviedb.org/3/search/movie?api_key=" + BuildConfig.API_KEY + "&language=en-US&query=" + query;
+            url = BuildConfig.SEARCH+ BuildConfig.API_KEY + "&language=en-US&query=" + query;
         } else {
-            url = "https://api.themoviedb.org/3/movie/upcoming?api_key=" + BuildConfig.API_KEY + "&language=en-US";
+            url = BuildConfig.UPCOMING+ BuildConfig.API_KEY + "&language=en-US";
         }
 
         client.get(url, new AsyncHttpResponseHandler() {
