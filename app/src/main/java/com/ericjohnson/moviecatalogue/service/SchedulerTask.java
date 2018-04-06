@@ -21,8 +21,8 @@ public class SchedulerTask {
     public void createPeriodicTask() {
         Task task = new PeriodicTask.Builder()
                 .setService(UpcomingMovieServices.class)
-                .setPeriod(10)
-                .setFlex(5)
+                .setPeriod(5L)
+                .setFlex(2L)
                 .setRequiredNetwork(PeriodicTask.NETWORK_STATE_ANY)
                 .setTag(UpcomingMovieServices.TAG)
                 .setPersisted(true)

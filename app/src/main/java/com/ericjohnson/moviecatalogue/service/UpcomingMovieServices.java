@@ -15,9 +15,8 @@ import android.util.Log;
 
 import com.ericjohnson.moviecatalogue.BuildConfig;
 import com.ericjohnson.moviecatalogue.R;
-import com.ericjohnson.moviecatalogue.activity.MainActivity;
+import com.ericjohnson.moviecatalogue.activity.MovieDetailActivity;
 import com.ericjohnson.moviecatalogue.model.Movies;
-import com.ericjohnson.moviecatalogue.model.NotificationItem;
 import com.ericjohnson.moviecatalogue.utils.DateUtil;
 import com.ericjohnson.moviecatalogue.utils.Keys;
 import com.google.android.gms.gcm.GcmNetworkManager;
@@ -43,8 +42,6 @@ public class UpcomingMovieServices extends GcmTaskService {
     public static final String TAG = UpcomingMovieServices.class.getSimpleName();
 
     private ArrayList<Movies> movies = new ArrayList<>();
-    private ArrayList<NotificationItem> stackNotif = new ArrayList<>();
-    private int notifId = 0;
 
     public static String TAG_TASK_MOVIES_LOG = "MoviesTask";
 
@@ -88,9 +85,7 @@ public class UpcomingMovieServices extends GcmTaskService {
                     Log.d(TAG_TASK_MOVIES_LOG, result);
 
                     int randomMovieIndex = new Random().nextInt(movies.size() + 1);
-                    stackNotif.add(new NotificationItem(notifId, movies.get(randomMovieIndex)));
-                    notifId++;
-                    showNotification(getApplicationContext(), notifId);
+                    showNotification(getApplicationContext(), movies.get(randomMovieIndex), movies.get(randomMovieIndex).getId());
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -104,24 +99,24 @@ public class UpcomingMovieServices extends GcmTaskService {
     }
 
 
-    private void showNotification(Context context, int notifId) {
-        Intent notifIntent = new Intent(this, MainActivity.class);
-        notifIntent.putExtra(Keys.KEY_UPCOMING_MOVIE, 1);
+    private void showNotification(Context context, Movies movies, int notifId) {
+        Intent notifIntent = new Intent(this, MovieDetailActivity.class);
+        notifIntent.putExtra(Keys.KEY_MOVIE_ID, notifId);
+        notifIntent.putExtra(Keys.KEY_TITLE, movies.getTitle());
         PendingIntent pendingIntent = TaskStackBuilder.create(this)
+                .addParentStack(MovieDetailActivity.class)
                 .addNextIntent(notifIntent)
                 .getPendingIntent(110, PendingIntent.FLAG_UPDATE_CURRENT);
         NotificationManagerCompat notificationManagerCompact = NotificationManagerCompat.from(context);
         Uri alarmSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-        NotificationItem currentMovie = stackNotif.get(notifId);
-        Notification notification=null;
+        Notification notification;
         notification = new NotificationCompat.Builder(context)
                 .setSmallIcon(R.drawable.ic_local_movies)
-                .setContentTitle(currentMovie.getMovies().getTitle())
-                .setContentText(String.format("%s %s", currentMovie.getMovies().getTitle(),
+                .setContentTitle(movies.getTitle())
+                .setContentText(String.format("%s %s", movies.getTitle(),
                         getString(R.string.label_notif_message)))
                 .setColor(ContextCompat.getColor(context, android.R.color.black))
                 .setVibrate(new long[]{1000, 1000, 1000, 1000, 1000})
-                .setGroup("movies")
                 .setContentIntent(pendingIntent)
                 .setAutoCancel(true)
                 .setSound(alarmSound)
