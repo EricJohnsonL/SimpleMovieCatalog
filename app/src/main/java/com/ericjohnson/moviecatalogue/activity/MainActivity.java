@@ -41,8 +41,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private ActionBarDrawerToggle toggle;
 
-    private int getDrawerItem;
-
     private int currentPosition;
 
     private Fragment currentFragment;
@@ -58,7 +56,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         navView.setNavigationItemSelectedListener(this);
 
-        getDrawerItem = getIntent().getIntExtra(Keys.KEY_UPCOMING_MOVIE, 0);
+        int getDrawerItem = getIntent().getIntExtra(Keys.KEY_UPCOMING_MOVIE, 0);
 
         if (getDrawerItem == 1) {
             currentFragment = new UpcomingFragment();

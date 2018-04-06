@@ -13,7 +13,7 @@ import static com.ericjohnson.moviecatalogue.db.DatabaseContract.TABLE_MOVIES;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
 
-    public static final String DATABASE_NAME = "dbmovies";
+    private static final String DATABASE_NAME = "dbmovies";
 
     private static final int DATABASE_VERSION = 1;
 
@@ -29,7 +29,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             MoviesColumns.RELEASEDATE
     );
 
-    public DatabaseHelper(Context context) {
+    DatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 

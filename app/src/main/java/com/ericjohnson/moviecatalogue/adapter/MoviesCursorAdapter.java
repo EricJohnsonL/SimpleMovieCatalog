@@ -3,18 +3,25 @@ package com.ericjohnson.moviecatalogue.adapter;
 import android.app.Activity;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.DataSource;
+import com.bumptech.glide.load.engine.GlideException;
+import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.RequestOptions;
+import com.bumptech.glide.request.target.Target;
 import com.ericjohnson.moviecatalogue.BuildConfig;
 import com.ericjohnson.moviecatalogue.R;
 import com.ericjohnson.moviecatalogue.activity.MovieDetailActivity;
@@ -50,15 +57,28 @@ public class MoviesCursorAdapter extends RecyclerView.Adapter<MoviesCursorAdapte
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull final ViewHolder holder, int position) {
         final Movies movies = getItem(position);
         RequestOptions requestOptions = new RequestOptions()
-                .placeholder(R.drawable.ic_image)
                 .error(R.drawable.ic_image)
                 .fallback(R.drawable.ic_image);
 
-        Glide.with(activity).setDefaultRequestOptions(requestOptions).
-                load(BuildConfig.IMAGE_URL+ movies.getPoster()).into(holder.ivPoster);
+        Glide.with(activity).setDefaultRequestOptions(requestOptions)
+                .load(BuildConfig.IMAGE_URL + movies.getPoster())
+                .listener(new RequestListener<Drawable>() {
+                    @Override
+                    public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+                        holder.pbImage.setVisibility(View.GONE);
+                        return false;
+                    }
+
+                    @Override
+                    public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+                        holder.pbImage.setVisibility(View.GONE);
+                        return false;
+                    }
+                })
+                .into(holder.ivPoster);
         holder.tvTitle.setText(movies.getTitle());
         holder.tvReleaseDate.setText(DateUtil.getReadableDate(movies.getReleaseDate()));
         holder.cvMovies.setOnClickListener(new CustomOnClickLIstener(position, new CustomOnClickLIstener.OnItemClickCallback() {
@@ -101,7 +121,10 @@ public class MoviesCursorAdapter extends RecyclerView.Adapter<MoviesCursorAdapte
         @BindView(R.id.cv_movies)
         CardView cvMovies;
 
-        public ViewHolder(View itemView) {
+        @BindView(R.id.pb_image)
+        ProgressBar pbImage;
+
+        ViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
         }

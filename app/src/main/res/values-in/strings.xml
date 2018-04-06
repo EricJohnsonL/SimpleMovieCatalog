@@ -22,5 +22,5 @@
     <string name="label_upcoming_reminder_notification">Notifikasi pengingat film segera tayang</string>
     <string name="label_turn_on_off_upcoming_reminder">Atur Notifikasi pengingat film segera tayang</string>
     <string name="label_change_language">Ganti Bahasa</string>
-    <string name="label_notif_message">Atur jadwal nontonmu dengan melihat film yang akan datang!</string>
+    <string name="label_notif_message"> sudah rilis!</string>
 </resources>

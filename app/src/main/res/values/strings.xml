@@ -23,7 +23,7 @@
     <string name="label_upcoming_reminder_notification">Upcoming Reminder Notification</string>
     <string name="label_turn_on_off_upcoming_reminder">Turn on/off upcoming reminder</string>
     <string name="label_change_language">Change Language</string>
-    <string name="label_notif_message">Set your plan to watch the upcoming movies. Check it out!</string>
+    <string name="label_notif_message"> is out!</string>
     <string name="label_off">OFF</string>
     <string name="label_on">ON</string>
     <string name="label_favourite_movie">Favourite Movie</string>

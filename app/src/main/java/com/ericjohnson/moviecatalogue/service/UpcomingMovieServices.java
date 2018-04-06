@@ -1,6 +1,6 @@
 package com.ericjohnson.moviecatalogue.service;
 
-import android.app.NotificationManager;
+import android.app.Notification;
 import android.app.PendingIntent;
 import android.app.TaskStackBuilder;
 import android.content.Context;
@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.NotificationManagerCompat;
 import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.util.Log;
@@ -16,6 +17,7 @@ import com.ericjohnson.moviecatalogue.BuildConfig;
 import com.ericjohnson.moviecatalogue.R;
 import com.ericjohnson.moviecatalogue.activity.MainActivity;
 import com.ericjohnson.moviecatalogue.model.Movies;
+import com.ericjohnson.moviecatalogue.model.NotificationItem;
 import com.ericjohnson.moviecatalogue.utils.DateUtil;
 import com.ericjohnson.moviecatalogue.utils.Keys;
 import com.google.android.gms.gcm.GcmNetworkManager;
@@ -28,6 +30,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 import cz.msebera.android.httpclient.Header;
 
@@ -40,6 +43,8 @@ public class UpcomingMovieServices extends GcmTaskService {
     public static final String TAG = UpcomingMovieServices.class.getSimpleName();
 
     private ArrayList<Movies> movies = new ArrayList<>();
+    private ArrayList<NotificationItem> stackNotif = new ArrayList<>();
+    private int notifId = 0;
 
     public static String TAG_TASK_MOVIES_LOG = "MoviesTask";
 
@@ -81,9 +86,11 @@ public class UpcomingMovieServices extends GcmTaskService {
                         movies.add(movie);
                     }
                     Log.d(TAG_TASK_MOVIES_LOG, result);
-                    String message = getString(R.string.label_notif_message);
-                    int notifId = 100;
-                    showNotification(getApplicationContext(), message, notifId);
+
+                    int randomMovieIndex = new Random().nextInt(movies.size() + 1);
+                    stackNotif.add(new NotificationItem(notifId, movies.get(randomMovieIndex)));
+                    notifId++;
+                    showNotification(getApplicationContext(), notifId);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -96,23 +103,29 @@ public class UpcomingMovieServices extends GcmTaskService {
         });
     }
 
-    private void showNotification(Context context, String message, int notifId) {
+
+    private void showNotification(Context context, int notifId) {
         Intent notifIntent = new Intent(this, MainActivity.class);
         notifIntent.putExtra(Keys.KEY_UPCOMING_MOVIE, 1);
         PendingIntent pendingIntent = TaskStackBuilder.create(this)
                 .addNextIntent(notifIntent)
                 .getPendingIntent(110, PendingIntent.FLAG_UPDATE_CURRENT);
-        NotificationManager notificationManagerCompat = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+        NotificationManagerCompat notificationManagerCompact = NotificationManagerCompat.from(context);
         Uri alarmSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(context)
-                .setContentTitle(getString(R.string.app_name))
+        NotificationItem currentMovie = stackNotif.get(notifId);
+        Notification notification=null;
+        notification = new NotificationCompat.Builder(context)
                 .setSmallIcon(R.drawable.ic_local_movies)
-                .setContentText(message)
+                .setContentTitle(currentMovie.getMovies().getTitle())
+                .setContentText(String.format("%s %s", currentMovie.getMovies().getTitle(),
+                        getString(R.string.label_notif_message)))
                 .setColor(ContextCompat.getColor(context, android.R.color.black))
                 .setVibrate(new long[]{1000, 1000, 1000, 1000, 1000})
+                .setGroup("movies")
                 .setContentIntent(pendingIntent)
                 .setAutoCancel(true)
-                .setSound(alarmSound);
-        notificationManagerCompat.notify(notifId, builder.build());
+                .setSound(alarmSound)
+                .build();
+        notificationManagerCompact.notify(notifId, notification);
     }
 }

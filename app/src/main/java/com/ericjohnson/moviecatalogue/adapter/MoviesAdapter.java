@@ -1,17 +1,24 @@
 package com.ericjohnson.moviecatalogue.adapter;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.DataSource;
+import com.bumptech.glide.load.engine.GlideException;
+import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.RequestOptions;
+import com.bumptech.glide.request.target.Target;
 import com.ericjohnson.moviecatalogue.BuildConfig;
 import com.ericjohnson.moviecatalogue.R;
 import com.ericjohnson.moviecatalogue.model.Movies;
@@ -55,13 +62,27 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MoviesView
     }
 
     @Override
-    public void onBindViewHolder(@NonNull MoviesViewHolder holder, final int position) {
+    public void onBindViewHolder(@NonNull final MoviesViewHolder holder, final int position) {
         RequestOptions requestOptions = new RequestOptions()
-                .placeholder(R.drawable.ic_image)
                 .error(R.drawable.ic_image)
                 .fallback(R.drawable.ic_image);
-        Glide.with(context).setDefaultRequestOptions(requestOptions).
-                load( BuildConfig.IMAGE_URL+ moviesList.get(position).getPoster()).into(holder.ivPoster);
+
+        Glide.with(context).setDefaultRequestOptions(requestOptions)
+                .load(BuildConfig.IMAGE_URL + moviesList.get(position).getPoster())
+                .listener(new RequestListener<Drawable>() {
+                    @Override
+                    public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+                        holder.pbImage.setVisibility(View.GONE);
+                        return false;
+                    }
+
+                    @Override
+                    public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+                        holder.pbImage.setVisibility(View.GONE);
+                        return false;
+                    }
+                })
+                .into(holder.ivPoster);
         holder.tvTitle.setText(moviesList.get(position).getTitle());
         holder.tvReleaseDate.setText(moviesList.get(position).getReleaseDate());
     }
@@ -84,6 +105,9 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MoviesView
 
         @BindView(R.id.cv_movies)
         CardView cvMovies;
+
+        @BindView(R.id.pb_image)
+        ProgressBar pbImage;
 
         MoviesViewHolder(final View itemView) {
             super(itemView);

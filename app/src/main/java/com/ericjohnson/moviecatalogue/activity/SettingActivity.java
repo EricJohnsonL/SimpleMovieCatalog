@@ -1,5 +1,6 @@
 package com.ericjohnson.moviecatalogue.activity;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -7,6 +8,7 @@ import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.LinearLayout;
@@ -36,6 +38,7 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
 
     private SchedulerTask schedulerTask;
 
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,9 +46,10 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
         ButterKnife.bind(this);
 
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle(getString(R.string.label_setting));
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setTitle(getString(R.string.label_setting));
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
         llLanguage.setOnClickListener(this);
 
         schedulerTask = new SchedulerTask(SettingActivity.this);
@@ -55,6 +59,13 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
             swUpcoming.setChecked(true);
             schedulerTask.createPeriodicTask();
         }
+
+        swUpcoming.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                return event.getActionMasked() == MotionEvent.ACTION_MOVE;
+            }
+        });
 
 
         swUpcoming.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {

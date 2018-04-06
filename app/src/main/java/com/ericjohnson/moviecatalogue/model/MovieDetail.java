@@ -24,9 +24,6 @@ public class MovieDetail {
 
     private float voteAverage;
 
-    public MovieDetail() {
-    }
-
     public MovieDetail(int id, String title, String language, String overview, String poster, ArrayList<Genre> genres, String releaseDate, float voteAverage) {
         this.id = id;
         this.title = title;

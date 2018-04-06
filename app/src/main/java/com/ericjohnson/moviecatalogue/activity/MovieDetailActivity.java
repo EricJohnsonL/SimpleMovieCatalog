@@ -92,10 +92,6 @@ public class MovieDetailActivity extends AppCompatActivity implements
     @BindView(R.id.ib_favourite)
     ImageButton ibFavourite;
 
-    private Cursor movie;
-
-    private MoviesHelper moviesHelper;
-
     private boolean isFavourited = false;
 
     private int id;
@@ -108,7 +104,7 @@ public class MovieDetailActivity extends AppCompatActivity implements
         setContentView(R.layout.activity_movie_detail);
         ButterKnife.bind(this);
 
-        moviesHelper = new MoviesHelper(this);
+        MoviesHelper moviesHelper = new MoviesHelper(this);
         moviesHelper.open();
 
         tvLabelReleaseDate.setPaintFlags(tvLabelReleaseDate.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
@@ -121,8 +117,10 @@ public class MovieDetailActivity extends AppCompatActivity implements
         final String title = getIntent().getStringExtra(Keys.KEY_TITLE);
 
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle(title);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setTitle(title);
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
         getMovieDetail(id);
         ibFavourite.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -140,11 +138,13 @@ public class MovieDetailActivity extends AppCompatActivity implements
                     Toast.makeText(MovieDetailActivity.this, R.string.label_added_to_favourite,
                             Toast.LENGTH_SHORT).show();
                 } else {
-                    getContentResolver().delete(getIntent().getData(), null, null);
-                    isFavourited = false;
-                    ibFavourite.setBackground(getResources().getDrawable(R.drawable.ic_favorite_border));
-                    Toast.makeText(MovieDetailActivity.this, R.string.label_removed_from_favourite,
-                            Toast.LENGTH_SHORT).show();
+                    if (getIntent().getData() != null) {
+                        getContentResolver().delete(getIntent().getData(), null, null);
+                        isFavourited = false;
+                        ibFavourite.setBackground(getResources().getDrawable(R.drawable.ic_favorite_border));
+                        Toast.makeText(MovieDetailActivity.this, R.string.label_removed_from_favourite,
+                                Toast.LENGTH_SHORT).show();
+                    }
                 }
             }
         });
@@ -203,18 +203,19 @@ public class MovieDetailActivity extends AppCompatActivity implements
         }
 
         Uri uri = getIntent().getData();
-        Cursor cursor = getContentResolver().query(uri, null, null, null, null);
-
-        if (cursor != null) {
-            if (cursor.getCount() == 0) {
-                ibFavourite.setBackground(getResources().getDrawable(R.drawable.ic_favorite_border));
-                isFavourited = false;
-            } else {
-                ibFavourite.setBackground(getResources().getDrawable(R.drawable.ic_favorite));
-                isFavourited = true;
+        if (uri != null) {
+            Cursor cursor = getContentResolver().query(uri, null, null, null, null);
+            if (cursor != null) {
+                if (cursor.getCount() == 0) {
+                    ibFavourite.setBackground(getResources().getDrawable(R.drawable.ic_favorite_border));
+                    isFavourited = false;
+                } else {
+                    ibFavourite.setBackground(getResources().getDrawable(R.drawable.ic_favorite));
+                    isFavourited = true;
+                }
+                cursor.close();
             }
         }
-        cursor.close();
 
     }
 
