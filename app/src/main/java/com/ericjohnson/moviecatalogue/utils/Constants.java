@@ -13,4 +13,16 @@ public class Constants {
     public static final int UPCOMING_MOVIE_TYPE = 3;
 
     public static final int FAVORITE_MOVIE_TYPE = 4;
+
+    public static final int DAILY_REMINDER_CODE = 10;
+
+    public static final int UPCOMING_REMINDER_CODE=11;
+
+    public static final String TYPE_DAILY="daily";
+
+    public static final String TYPE_CANCEL_DAILY="cancel_daily";
+
+    public static final String TYPE_UPCOMING="upcoming";
+
+    public static final String TYPE_CANCEL_UPCOMING="cancel_upcoming";
 }

@@ -25,6 +25,31 @@
             android:layout_marginTop="12dp">
 
             <TextView
+                android:id="@+id/tv_daily_reminder"
+                style="@style/CustomTextSubLabelSetting"
+                android:layout_alignParentTop="true"
+                android:text="@string/label_daily_reminder_notification" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/tv_daily_reminder"
+                android:text="@string/label_turn_on_off_daily_reminder" />
+
+            <Switch
+                android:id="@+id/sw_daily_reminder"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp">
+
+            <TextView
                 android:id="@+id/tv_upcoming"
                 style="@style/CustomTextSubLabelSetting"
                 android:layout_alignParentTop="true"

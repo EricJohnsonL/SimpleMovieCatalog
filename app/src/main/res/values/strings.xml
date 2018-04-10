@@ -31,4 +31,12 @@
     <string name="label_added_to_favourite">Added to favourite</string>
     <string name="label_removed_from_favourite">Removed from favourite</string>
     <string name="label_empty_favorite_movies">No Favorite Movies</string>
+    <string name="label_daily_reminder_notification">Daily Reminder Notification</string>
+    <string name="label_turn_on_off_daily_reminder">Turn on/off daily reminder</string>
+    <string name="message_error_load_data">Can\'t loaded data</string>
+    <string name="label_missing_you">missing you</string>
+    <string name="appwidget_text">Your Favorite Movie</string>
+    <string name="add_widget">Add widget</string>
+    <string name="empty_text">No Data</string>
+    <string name="label_failed_to_load_data">Failed to load data</string>
 </resources>

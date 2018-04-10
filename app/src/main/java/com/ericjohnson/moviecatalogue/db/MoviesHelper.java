@@ -27,6 +27,10 @@ public class MoviesHelper {
         return this;
     }
 
+    public void close(){
+        database.close();
+    }
+
     public Cursor queryByIdProvider(String id){
         return database.query(DATABASE_TABLE,null
                 ,_ID + " = ?"

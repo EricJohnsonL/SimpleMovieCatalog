@@ -5,6 +5,8 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
 
     <permission
         android:name="com.ericjohnson.moviecatalogue.READ_DATABASE"
@@ -22,8 +24,8 @@
         android:theme="@style/AppTheme.NoActionBar">
         <activity
             android:name=".activity.MainActivity"
-            android:launchMode="singleTop"
-            android:screenOrientation="portrait">
+            android:configChanges="orientation|screenSize"
+            android:launchMode="singleTop">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -32,15 +34,13 @@
         </activity>
         <activity
             android:name=".activity.MovieDetailActivity"
-            android:parentActivityName="activity.MainActivity"
-            android:screenOrientation="portrait">
+            android:configChanges="orientation|screenSize"
+            android:parentActivityName=".activity.MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".activity.MainActivity" />
         </activity>
-        <activity
-            android:name=".activity.SettingActivity"
-            android:screenOrientation="portrait" />
+        <activity android:name=".activity.SettingActivity" />
 
         <provider
             android:name=".provider.MoviesProvider"
@@ -48,13 +48,32 @@
             android:exported="true"
             android:readPermission="com.ericjohnson.moviecatalogue.READ_DATABASE"
             android:writePermission="com.ericjohnson.moviecatalogue.WRITE_DATABASE" />
-        <service
-            android:name=".service.UpcomingMovieServices"
-            android:exported="true"
-            android:permission="com.google.android.gms.permission.BIND_NETWORK_TASK_SERVICE">
+
+        <receiver
+            android:name=".service.AlarmReceiver"
+            android:enabled="true"
+            android:exported="true">
             <intent-filter>
-                <action android:name="com.google.android.gms.gcm.ACTION_TASK_READY" />
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.intent.action.QUICKBOOT_POWERON" />
             </intent-filter>
-        </service>
+        </receiver>
+
+        <service android:name=".service.UpcomingMovieServices"
+            android:enabled="true"/>
+
+        <service android:name=".service.StackWidgetService"
+            android:permission="android.permission.BIND_REMOTEVIEWS"/>
+
+        <receiver android:name=".widget.StackWidget">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/stack_widget_info" />
+        </receiver>
     </application>
+
 </manifest>

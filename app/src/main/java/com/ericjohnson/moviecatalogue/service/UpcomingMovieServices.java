@@ -1,17 +1,20 @@
 package com.ericjohnson.moviecatalogue.service;
 
+import android.app.IntentService;
 import android.app.Notification;
+import android.app.NotificationManager;
 import android.app.PendingIntent;
-import android.app.TaskStackBuilder;
 import android.content.Context;
 import android.content.Intent;
 import android.media.RingtoneManager;
 import android.net.Uri;
+import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
-import android.support.v4.app.NotificationManagerCompat;
+import android.support.v4.app.TaskStackBuilder;
 import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.ericjohnson.moviecatalogue.BuildConfig;
 import com.ericjohnson.moviecatalogue.R;
@@ -19,9 +22,6 @@ import com.ericjohnson.moviecatalogue.activity.MovieDetailActivity;
 import com.ericjohnson.moviecatalogue.model.Movies;
 import com.ericjohnson.moviecatalogue.utils.DateUtil;
 import com.ericjohnson.moviecatalogue.utils.Keys;
-import com.google.android.gms.gcm.GcmNetworkManager;
-import com.google.android.gms.gcm.GcmTaskService;
-import com.google.android.gms.gcm.TaskParams;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.SyncHttpClient;
 
@@ -29,35 +29,38 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.Random;
 
 import cz.msebera.android.httpclient.Header;
+
+import static com.ericjohnson.moviecatalogue.db.DatabaseContract.CONTENT_URI;
 
 /**
  * Created by EricJohnson on 3/16/2018.
  */
 
-public class UpcomingMovieServices extends GcmTaskService {
+public class UpcomingMovieServices extends IntentService {
 
     public static final String TAG = UpcomingMovieServices.class.getSimpleName();
 
     private ArrayList<Movies> movies = new ArrayList<>();
 
-    public static String TAG_TASK_MOVIES_LOG = "MoviesTask";
+    private static String TAG_TASK_MOVIES_LOG = "MoviesTask";
+
+    public UpcomingMovieServices() {
+        super("UpcomingMovieTask");
+    }
 
     @Override
-    public int onRunTask(TaskParams taskParams) {
-        int result = 0;
-        if (taskParams.getTag().equals(TAG)) {
+    protected void onHandleIntent(@Nullable Intent intent) {
+        if (intent != null) {
             getUpdatedMovie();
-            result = GcmNetworkManager.RESULT_SUCCESS;
         }
-        return result;
     }
+
 
     private void getUpdatedMovie() {
         SyncHttpClient client = new SyncHttpClient();
-        String url = "https://api.themoviedb.org/3/movie/upcoming?api_key=" + BuildConfig.API_KEY + "&language=en-US";
+        String url = BuildConfig.UPCOMING + BuildConfig.API_KEY + "&language=en-US";
         client.get(url, new AsyncHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
@@ -78,14 +81,18 @@ public class UpcomingMovieServices extends GcmTaskService {
                         }
 
                         date = TextUtils.isEmpty(date) ? "-" : DateUtil.getReadableDate(date);
-
-                        Movies movie = new Movies(id, title, imagePath, date);
-                        movies.add(movie);
+                        String currentDate = DateUtil.getReadableDate(DateUtil.getCurrentDate());
+                        if (date.equals(DateUtil.getReadableDate("2018-04-12"))) {
+                            Movies movie = new Movies(id, title, imagePath, date);
+                            movies.add(movie);
+                        }
                     }
                     Log.d(TAG_TASK_MOVIES_LOG, result);
-
-                    int randomMovieIndex = new Random().nextInt(movies.size() + 1);
-                    showNotification(getApplicationContext(), movies.get(randomMovieIndex), movies.get(randomMovieIndex).getId());
+                    if (movies.size() > 0) {
+                        for (Movies newMovie : movies) {
+                            showNotification(getApplicationContext(), newMovie);
+                        }
+                    }
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -93,21 +100,23 @@ public class UpcomingMovieServices extends GcmTaskService {
 
             @Override
             public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
-                Log.d("GetUpcomingMovies", "Failed");
+                Toast.makeText(UpcomingMovieServices.this, R.string.message_error_load_data, Toast.LENGTH_SHORT).show();
             }
         });
+
     }
 
-
-    private void showNotification(Context context, Movies movies, int notifId) {
+    private void showNotification(Context context, Movies movies) {
+        Uri uri = Uri.parse(CONTENT_URI + "/" + movies.getId());
         Intent notifIntent = new Intent(this, MovieDetailActivity.class);
-        notifIntent.putExtra(Keys.KEY_MOVIE_ID, notifId);
+        notifIntent.putExtra(Keys.KEY_MOVIE_ID, movies.getId());
         notifIntent.putExtra(Keys.KEY_TITLE, movies.getTitle());
+        notifIntent.setData(uri);
         PendingIntent pendingIntent = TaskStackBuilder.create(this)
                 .addParentStack(MovieDetailActivity.class)
                 .addNextIntent(notifIntent)
-                .getPendingIntent(110, PendingIntent.FLAG_UPDATE_CURRENT);
-        NotificationManagerCompat notificationManagerCompact = NotificationManagerCompat.from(context);
+                .getPendingIntent(movies.getId(), PendingIntent.FLAG_UPDATE_CURRENT);
+        NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         Uri alarmSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         Notification notification;
         notification = new NotificationCompat.Builder(context)
@@ -121,6 +130,9 @@ public class UpcomingMovieServices extends GcmTaskService {
                 .setAutoCancel(true)
                 .setSound(alarmSound)
                 .build();
-        notificationManagerCompact.notify(notifId, notification);
+
+        if (notificationManager != null) {
+            notificationManager.notify(movies.getId(), notification);
+        }
     }
 }

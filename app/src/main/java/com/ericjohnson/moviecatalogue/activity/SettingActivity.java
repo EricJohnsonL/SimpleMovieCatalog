@@ -16,7 +16,8 @@ import android.widget.Switch;
 import android.widget.TextView;
 
 import com.ericjohnson.moviecatalogue.R;
-import com.ericjohnson.moviecatalogue.service.SchedulerTask;
+import com.ericjohnson.moviecatalogue.service.AlarmReceiver;
+import com.ericjohnson.moviecatalogue.utils.Constants;
 import com.ericjohnson.moviecatalogue.utils.Keys;
 
 import butterknife.BindView;
@@ -36,7 +37,13 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
     @BindView(R.id.ll_language)
     LinearLayout llLanguage;
 
-    private SchedulerTask schedulerTask;
+    @BindView(R.id.tv_daily_reminder)
+    TextView tvDailyReminder;
+
+    @BindView(R.id.sw_daily_reminder)
+    Switch swDailyReminder;
+
+    private AlarmReceiver alarmReceiver;
 
     @SuppressLint("ClickableViewAccessibility")
     @Override
@@ -44,6 +51,7 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_setting);
         ButterKnife.bind(this);
+        alarmReceiver = new AlarmReceiver();
 
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null) {
@@ -52,13 +60,22 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
         }
         llLanguage.setOnClickListener(this);
 
-        schedulerTask = new SchedulerTask(SettingActivity.this);
+        if (getPreferences(Context.MODE_PRIVATE).getString(Keys.PREF_DAILY_NOTIF,
+                getString(R.string.label_off)).equals(getString(R.string.label_on))) {
+            swDailyReminder.setChecked(true);
+        }
 
         if (getPreferences(Context.MODE_PRIVATE).getString(Keys.PREF_UPCOMING_NOTIF,
                 getString(R.string.label_off)).equals(getString(R.string.label_on))) {
             swUpcoming.setChecked(true);
-            schedulerTask.createPeriodicTask();
         }
+
+        swDailyReminder.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                return event.getActionMasked() == MotionEvent.ACTION_MOVE;
+            }
+        });
 
         swUpcoming.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -67,16 +84,31 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
             }
         });
 
+        swDailyReminder.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    alarmReceiver.setDailyReminder(SettingActivity.this);
+                    getPreferences(Context.MODE_PRIVATE).edit().putString(Keys.PREF_DAILY_NOTIF,
+                            getString(R.string.label_on)).apply();
+                } else {
+                    alarmReceiver.cancelAlarm(SettingActivity.this, Constants.TYPE_DAILY);
+                    getPreferences(Context.MODE_PRIVATE).edit().putString(Keys.PREF_DAILY_NOTIF,
+                            getString(R.string.label_off)).apply();
+                }
+            }
+        });
+
 
         swUpcoming.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
-                    schedulerTask.createPeriodicTask();
+                    alarmReceiver.setUpcomingReminder(SettingActivity.this);
                     getPreferences(Context.MODE_PRIVATE).edit().putString(Keys.PREF_UPCOMING_NOTIF,
                             getString(R.string.label_on)).apply();
                 } else {
-                    schedulerTask.cancelPeriodicTask();
+                    alarmReceiver.cancelAlarm(SettingActivity.this, Constants.TYPE_UPCOMING);
                     getPreferences(Context.MODE_PRIVATE).edit().putString(Keys.PREF_UPCOMING_NOTIF,
                             getString(R.string.label_off)).apply();
                 }

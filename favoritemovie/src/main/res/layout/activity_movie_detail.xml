@@ -1,123 +1,129 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    tools:context=".activity.MovieDetailActivity">
+    android:layout_height="match_parent">
 
-    <ProgressBar
-        android:id="@+id/pb_movie_detail"
-        style="@style/CustomProgressBar" />
-
-    <TextView
-        android:id="@+id/tv_movie_detail_error"
-        style="@style/CustomTextViewError" />
-
-    <LinearLayout
-        android:id="@+id/ll_movie_detail"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:visibility="gone">
+        tools:context=".activity.MovieDetailActivity">
 
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="210dp"
-            android:layout_marginBottom="8dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginTop="16dp">
+        <ProgressBar
+            android:id="@+id/pb_movie_detail"
+            style="@style/CustomProgressBar" />
 
-            <ImageView
-                android:id="@+id/iv_poster_detail"
-                android:layout_width="160dp"
-                android:layout_height="185dp" />
-
-            <TextView
-                android:id="@+id/tv_title_detail"
-                style="@style/CustomTextTitleMovieDetail"
-                android:layout_marginEnd="16dp"
-                android:layout_toEndOf="@id/iv_poster_detail" />
-
-            <TextView
-                android:id="@+id/tv_label_release_date"
-                style="@style/CustomTextLabelMovieDetail"
-                android:layout_below="@id/tv_title_detail"
-                android:layout_toEndOf="@id/iv_poster_detail"
-                android:text="@string/label_release_date" />
-
-            <TextView
-                android:id="@+id/tv_release_date_detail"
-                style="@style/CustomTextContentMovieDetail"
-                android:layout_below="@id/tv_label_release_date"
-                android:layout_marginBottom="4dp"
-                android:layout_toEndOf="@id/iv_poster_detail" />
-
-            <TextView
-                android:id="@+id/tv_label_genre"
-                style="@style/CustomTextLabelMovieDetail"
-                android:layout_below="@id/tv_release_date_detail"
-                android:layout_toEndOf="@id/iv_poster_detail"
-                android:text="@string/label_genre" />
-
-            <TextView
-                android:id="@+id/tv_genre"
-                style="@style/CustomTextContentMovieDetail"
-                android:layout_below="@id/tv_label_genre"
-                android:layout_marginBottom="4dp"
-                android:layout_toEndOf="@id/iv_poster_detail" />
-
-            <TextView
-                android:id="@+id/tv_label_language"
-                style="@style/CustomTextLabelMovieDetail"
-                android:layout_below="@id/tv_genre"
-                android:layout_toEndOf="@id/iv_poster_detail"
-                android:text="@string/label_language" />
-
-            <TextView
-                android:id="@+id/tv_language"
-                style="@style/CustomTextContentMovieDetail"
-                android:layout_below="@id/tv_label_language"
-                android:layout_toEndOf="@id/iv_poster_detail" />
-
-            <TextView
-                android:id="@+id/tv_rating_detail"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentBottom="true"
-                android:layout_alignParentEnd="true"
-                android:layout_marginEnd="8dp"
-                android:textSize="18sp"
-                android:textStyle="bold" />
-        </RelativeLayout>
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="2dp"
-            android:background="@color/grey" />
+        <TextView
+            android:id="@+id/tv_movie_detail_error"
+            style="@style/CustomTextViewError" />
 
         <LinearLayout
+            android:id="@+id/ll_movie_detail"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_margin="8dp"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:visibility="gone">
 
-            <TextView
+            <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="4dp"
-                android:text="@string/label_synopsis"
-                android:textColor="@color/black"
-                android:textSize="14sp"
-                android:textStyle="bold" />
+                android:layout_height="210dp"
+                android:layout_marginBottom="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginTop="16dp">
 
-            <TextView
-                android:id="@+id/tv_synopsis"
+                <ImageView
+                    android:id="@+id/iv_poster_detail"
+                    android:layout_width="160dp"
+                    android:layout_height="185dp" />
+
+                <TextView
+                    android:id="@+id/tv_title_detail"
+                    style="@style/CustomTextTitleMovieDetail"
+                    android:layout_marginEnd="16dp"
+                    android:layout_toEndOf="@id/iv_poster_detail" />
+
+                <TextView
+                    android:id="@+id/tv_label_release_date"
+                    style="@style/CustomTextLabelMovieDetail"
+                    android:layout_below="@id/tv_title_detail"
+                    android:layout_toEndOf="@id/iv_poster_detail"
+                    android:text="@string/label_release_date" />
+
+                <TextView
+                    android:id="@+id/tv_release_date_detail"
+                    style="@style/CustomTextContentMovieDetail"
+                    android:layout_below="@id/tv_label_release_date"
+                    android:layout_marginBottom="4dp"
+                    android:layout_toEndOf="@id/iv_poster_detail" />
+
+                <TextView
+                    android:id="@+id/tv_label_genre"
+                    style="@style/CustomTextLabelMovieDetail"
+                    android:layout_below="@id/tv_release_date_detail"
+                    android:layout_toEndOf="@id/iv_poster_detail"
+                    android:text="@string/label_genre" />
+
+                <TextView
+                    android:id="@+id/tv_genre"
+                    style="@style/CustomTextContentMovieDetail"
+                    android:layout_below="@id/tv_label_genre"
+                    android:layout_marginBottom="4dp"
+                    android:layout_toEndOf="@id/iv_poster_detail" />
+
+                <TextView
+                    android:id="@+id/tv_label_language"
+                    style="@style/CustomTextLabelMovieDetail"
+                    android:layout_below="@id/tv_genre"
+                    android:layout_toEndOf="@id/iv_poster_detail"
+                    android:text="@string/label_language" />
+
+                <TextView
+                    android:id="@+id/tv_language"
+                    style="@style/CustomTextContentMovieDetail"
+                    android:layout_below="@id/tv_label_language"
+                    android:layout_toEndOf="@id/iv_poster_detail" />
+
+                <TextView
+                    android:id="@+id/tv_rating_detail"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginEnd="8dp"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+            </RelativeLayout>
+
+            <View
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textAlignment="textStart" />
+                android:layout_height="2dp"
+                android:background="@color/grey" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="8dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="4dp"
+                    android:text="@string/label_synopsis"
+                    android:textColor="@color/black"
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/tv_synopsis"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textAlignment="textStart" />
+            </LinearLayout>
+
         </LinearLayout>
-
-    </LinearLayout>
-</RelativeLayout>
+    </RelativeLayout>
+</ScrollView>

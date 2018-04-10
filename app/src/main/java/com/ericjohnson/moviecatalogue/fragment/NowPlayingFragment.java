@@ -66,6 +66,8 @@ public class NowPlayingFragment extends Fragment implements
         // Required empty public constructor
     }
 
+
+
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -117,7 +119,6 @@ public class NowPlayingFragment extends Fragment implements
     }
 
     private void getData() {
-
         ConnectivityManager cm = (ConnectivityManager) getContext().getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetwork = null;
         if (cm != null) {

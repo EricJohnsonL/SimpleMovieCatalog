@@ -4,6 +4,7 @@ import android.app.LoaderManager;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Loader;
+import android.content.res.Configuration;
 import android.database.Cursor;
 import android.graphics.Paint;
 import android.net.ConnectivityManager;
@@ -14,12 +15,11 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -86,8 +86,8 @@ public class MovieDetailActivity extends AppCompatActivity implements
     @BindView(R.id.tv_synopsis)
     TextView tvSynopsis;
 
-    @BindView(R.id.ll_movie_detail)
-    LinearLayout llMovieDetail;
+    @BindView(R.id.sv_movie_detail)
+    ScrollView svMovieDetail;
 
     @BindView(R.id.ib_favourite)
     ImageButton ibFavourite;
@@ -152,6 +152,11 @@ public class MovieDetailActivity extends AppCompatActivity implements
     }
 
     @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+    }
+
+    @Override
     public Loader<MovieDetail> onCreateLoader(int id, Bundle args) {
         int movieId = args.getInt(Keys.KEY_MOVIE_ID);
         return new MovieDetailAsynctaskLoader(this, movieId);
@@ -159,64 +164,69 @@ public class MovieDetailActivity extends AppCompatActivity implements
 
     @Override
     public void onLoadFinished(Loader<MovieDetail> loader, MovieDetail data) {
-        pbMovieDetail.setVisibility(View.GONE);
-        llMovieDetail.setVisibility(View.VISIBLE);
+        if (data != null) {
+            pbMovieDetail.setVisibility(View.GONE);
+            svMovieDetail.setVisibility(View.VISIBLE);
 
-        tvTitleDetail.setText(!TextUtils.isEmpty(data.getTitle()) ? data.getTitle() : "");
-        tvReleaseDateDetail.setText(!TextUtils.isEmpty(data.getReleaseDate()) ? DateUtil.getReadableDate(data.getReleaseDate()) : "-");
-        tvLanguage.setText(!TextUtils.isEmpty(data.getLanguage()) ? data.getLanguage() : "-");
-        tvSynopsis.setText(!TextUtils.isEmpty(data.getOverview()) ? data.getOverview() : "-");
+            tvTitleDetail.setText(!TextUtils.isEmpty(data.getTitle()) ? data.getTitle() : "");
+            tvReleaseDateDetail.setText(!TextUtils.isEmpty(data.getReleaseDate()) ? DateUtil.getReadableDate(data.getReleaseDate()) : "-");
+            tvLanguage.setText(!TextUtils.isEmpty(data.getLanguage()) ? data.getLanguage() : "-");
+            tvSynopsis.setText(!TextUtils.isEmpty(data.getOverview()) ? data.getOverview() : "-");
 
-        ivPosterDetail.setBackground(ContextCompat.getDrawable(this, R.drawable.ic_image));
+            ivPosterDetail.setBackground(ContextCompat.getDrawable(this, R.drawable.ic_image));
 
-        imageUrl = data.getPoster();
-        releaseDate = data.getReleaseDate();
+            imageUrl = data.getPoster();
+            releaseDate = data.getReleaseDate();
 
-        if (data.getPoster() != null) {
-            Glide.with(this).load(BuildConfig.IMAGE_URL + data.getPoster()).into(ivPosterDetail);
-        }
-
-        String rating;
-        if (data.getVoteAverage() > 0) {
-            DecimalFormat decimalFormat = new DecimalFormat("0.0");
-            rating = decimalFormat.format(data.getVoteAverage());
-            if (data.getVoteAverage() > 7.5) {
-                tvRatingDetail.setTextColor(ContextCompat.getColor(this, R.color.green));
-            } else {
-                tvRatingDetail.setTextColor(ContextCompat.getColor(this, R.color.yellow));
+            if (data.getPoster() != null) {
+                Glide.with(this).load(BuildConfig.IMAGE_URL + data.getPoster()).into(ivPosterDetail);
             }
-        } else {
-            rating = "-";
-            tvRatingDetail.setTextColor(ContextCompat.getColor(this, R.color.black));
-        }
-        tvRatingDetail.setText(rating);
 
-        if (data.getGenres() != null) {
-            StringBuilder genres = new StringBuilder();
-            for (Genre genre : data.getGenres()) {
-                genres.append(genre.getGenreName()).append(", ");
-            }
-            genres.deleteCharAt(genres.length() - 2);
-            tvGenre.setText(genres.toString());
-        } else {
-            tvGenre.setText("-");
-        }
-
-        Uri uri = getIntent().getData();
-        if (uri != null) {
-            Cursor cursor = getContentResolver().query(uri, null, null, null, null);
-            if (cursor != null) {
-                if (cursor.getCount() == 0) {
-                    ibFavourite.setBackground(getResources().getDrawable(R.drawable.ic_favorite_border));
-                    isFavourited = false;
+            String rating;
+            if (data.getVoteAverage() > 0) {
+                DecimalFormat decimalFormat = new DecimalFormat("0.0");
+                rating = decimalFormat.format(data.getVoteAverage());
+                if (data.getVoteAverage() > 7.5) {
+                    tvRatingDetail.setTextColor(ContextCompat.getColor(this, R.color.green));
                 } else {
-                    ibFavourite.setBackground(getResources().getDrawable(R.drawable.ic_favorite));
-                    isFavourited = true;
+                    tvRatingDetail.setTextColor(ContextCompat.getColor(this, R.color.yellow));
                 }
-                cursor.close();
+            } else {
+                rating = "-";
+                tvRatingDetail.setTextColor(ContextCompat.getColor(this, R.color.black));
             }
-        }
+            tvRatingDetail.setText(rating);
 
+            if (data.getGenres() != null) {
+                StringBuilder genres = new StringBuilder();
+                for (Genre genre : data.getGenres()) {
+                    genres.append(genre.getGenreName()).append(", ");
+                }
+                genres.deleteCharAt(genres.length() - 2);
+                tvGenre.setText(genres.toString());
+            } else {
+                tvGenre.setText("-");
+            }
+
+            Uri uri = getIntent().getData();
+            if (uri != null) {
+                Cursor cursor = getContentResolver().query(uri, null, null, null, null);
+                if (cursor != null) {
+                    if (cursor.getCount() == 0) {
+                        ibFavourite.setBackground(getResources().getDrawable(R.drawable.ic_favorite_border));
+                        isFavourited = false;
+                    } else {
+                        ibFavourite.setBackground(getResources().getDrawable(R.drawable.ic_favorite));
+                        isFavourited = true;
+                    }
+                    cursor.close();
+                }
+            }
+
+        } else {
+            pbMovieDetail.setVisibility(View.GONE);
+            tvMovieDetailError.setVisibility(View.VISIBLE);
+        }
     }
 
     @Override
@@ -244,17 +254,6 @@ public class MovieDetailActivity extends AppCompatActivity implements
             pbMovieDetail.setVisibility(View.GONE);
             tvMovieDetailError.setVisibility(View.VISIBLE);
             tvMovieDetailError.setText(R.string.label_no_internet_connection);
-        }
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                finish();
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
         }
     }
 }

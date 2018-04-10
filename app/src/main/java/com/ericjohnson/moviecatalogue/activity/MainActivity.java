@@ -1,6 +1,7 @@
 package com.ericjohnson.moviecatalogue.activity;
 
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
@@ -19,7 +20,6 @@ import com.ericjohnson.moviecatalogue.fragment.FavouriteFragment;
 import com.ericjohnson.moviecatalogue.fragment.NowPlayingFragment;
 import com.ericjohnson.moviecatalogue.fragment.SearchFragment;
 import com.ericjohnson.moviecatalogue.fragment.UpcomingFragment;
-import com.ericjohnson.moviecatalogue.utils.Keys;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -56,21 +56,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         navView.setNavigationItemSelectedListener(this);
 
-        int getDrawerItem = getIntent().getIntExtra(Keys.KEY_UPCOMING_MOVIE, 0);
-
-        if (getDrawerItem == 1) {
-            currentFragment = new UpcomingFragment();
-            getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.fl_container, currentFragment).commit();
-            navView.getMenu().getItem(getDrawerItem).setChecked(true);
-            currentPosition = 1;
-        } else if (savedInstanceState == null) {
-            currentFragment = new NowPlayingFragment();
-            getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.fl_container, currentFragment).commit();
-            navView.getMenu().getItem(0).setChecked(true);
-            currentPosition = 0;
-        }
+        currentFragment = new NowPlayingFragment();
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.fl_container, currentFragment).commit();
+        navView.getMenu().getItem(0).setChecked(true);
+        currentPosition = 0;
         setTitle(getString(R.string.app_name));
     }
 
@@ -113,6 +103,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+    }
+
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -130,8 +125,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         } else if (id == R.id.search_movies) {
             fragment = new SearchFragment();
             position = 2;
-        }
-        else if (id == R.id.favourite_movies) {
+        } else if (id == R.id.favourite_movies) {
             fragment = new FavouriteFragment();
             position = 3;
         }
