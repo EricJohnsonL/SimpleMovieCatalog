@@ -82,7 +82,7 @@ public class UpcomingMovieServices extends IntentService {
 
                         date = TextUtils.isEmpty(date) ? "-" : DateUtil.getReadableDate(date);
                         String currentDate = DateUtil.getReadableDate(DateUtil.getCurrentDate());
-                        if (date.equals(DateUtil.getReadableDate("2018-04-12"))) {
+                        if (date.equals(currentDate)) {
                             Movies movie = new Movies(id, title, imagePath, date);
                             movies.add(movie);
                         }
