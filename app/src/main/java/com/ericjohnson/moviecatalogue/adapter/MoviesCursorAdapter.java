@@ -107,7 +107,7 @@ public class MoviesCursorAdapter extends RecyclerView.Adapter<MoviesCursorAdapte
         return movies.getCount();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
+    class ViewHolder extends RecyclerView.ViewHolder {
 
         @BindView(R.id.iv_poster)
         ImageView ivPoster;

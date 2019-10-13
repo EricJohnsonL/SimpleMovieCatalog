@@ -129,10 +129,9 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.ll_language:
-                Intent intent = new Intent(Settings.ACTION_LOCALE_SETTINGS);
-                startActivity(intent);
+        if (v.getId() == R.id.ll_language) {
+            Intent intent = new Intent(Settings.ACTION_LOCALE_SETTINGS);
+            startActivity(intent);
         }
     }
 }

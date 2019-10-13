@@ -101,7 +101,7 @@ public class MovieDetailActivity extends AppCompatActivity implements
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_movie_detail);
+        setContentView(R.layout.activity_movie_detail_constraint);
         ButterKnife.bind(this);
 
         MoviesHelper moviesHelper = new MoviesHelper(this);
